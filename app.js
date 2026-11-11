@@ -1,6 +1,6 @@
 (() => {
   'use strict';
-  const FALLBACK = `apple;jabłko\nbook;książka\nwater;woda\nhouse;dom\nfriend;przyjaciel|przyjaciółka\nschool;szkoła\nbeautiful;piękny|piękna\ntravel;podróżować\nfood;jedzenie\nwork;praca`;
+  const EMBEDDED_DICTIONARY = `tasty;pyszny\nawful;okropny\nhungry;głodny\nthirsty;spragniony\nbored;znudzony\nexcited;podekscytowany\nfine;dobrze\nangry;zły`;
   const STORAGE_KEY = 'slowka-en-pl-v1';
   const $ = (selector) => document.querySelector(selector);
   const ui = {
@@ -25,6 +25,15 @@
   async function loadDictionary() {
     ui.dictionaryStatus.textContent = 'Wczytuję słownik…';
     ui.loadError.hidden = true;
+    if (window.location.protocol === 'file:') {
+      state.words = parseDictionary(EMBEDDED_DICTIONARY);
+      ui.dictionaryStatus.textContent = `Tryb lokalny (file://) · słownik wbudowany · ${state.words.length} słówek`;
+      state.deck = shuffle(state.words);
+      state.review = state.reviewKeys.map(key => state.words.find(word => word.en === key)).filter(Boolean);
+      nextWord();
+      renderReview();
+      return;
+    }
     try {
       const response = await fetch(`slowa.txt?v=${Date.now()}`, { cache: 'no-store' });
       if (!response.ok) throw new Error(`HTTP ${response.status}`);
@@ -33,8 +42,8 @@
       state.words = words;
       ui.dictionaryStatus.textContent = `${words.length} słówek w bazie`;
     } catch (error) {
-      state.words = parseDictionary(FALLBACK);
-      ui.dictionaryStatus.textContent = 'Tryb awaryjny · 10 słówek';
+      state.words = parseDictionary(EMBEDDED_DICTIONARY);
+      ui.dictionaryStatus.textContent = `Tryb awaryjny · słownik wbudowany · ${state.words.length} słówek`;
       ui.loadError.hidden = false;
       console.warn('Nie udało się pobrać slowa.txt; uruchomiono słownik awaryjny.', error);
     }

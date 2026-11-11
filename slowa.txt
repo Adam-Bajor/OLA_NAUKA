@@ -1,4 +1,3 @@
-# English;Polish|alternate answer
 tasty;pyszny
 awful;okropny
 hungry;głodny
