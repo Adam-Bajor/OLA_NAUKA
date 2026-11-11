@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="pl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f5f7fb">
+  <meta name="description" content="Prosta aplikacja do nauki angielskich i polskich słówek.">
+  <title>Słówka — EN ↔ PL</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="app.js" defer></script>
+</head>
+<body>
+  <div class="app-shell">
+    <header class="topbar">
+      <a class="brand" href="./" aria-label="Słówka — strona główna"><span class="brand-mark" aria-hidden="true">Aa</span><span>Słówka<span class="brand-sub">EN ↔ PL</span></span></a>
+      <div class="top-actions"><span class="saved-note" id="save-note">Postęp zapisuje się automatycznie</span><button class="icon-button" id="theme-toggle" type="button" aria-label="Zmień motyw" title="Zmień motyw">☼</button></div>
+    </header>
+    <main class="main-layout">
+      <section class="learning-column" aria-labelledby="page-title">
+        <div class="intro"><div class="eyebrow"><span class="live-dot"></span> TWOJA CODZIENNA PRAKTYKA</div><h1 id="page-title">Małe kroki.<br><span>Wielkie słowa.</span></h1><p>Ćwicz we własnym tempie i buduj pewność słowo po słowie.</p></div>
+        <section class="practice-card" aria-label="Ćwiczenie ze słówek">
+          <div class="card-top"><div class="direction-pill" id="direction-label">ANGIELSKI <span>→</span> POLSKI</div><div class="counter" id="progress-label">Gotowy do nauki</div></div>
+          <div class="prompt-area"><div class="prompt-label" id="prompt-label">PRZETŁUMACZ NA POLSKI</div><div class="prompt-word" id="prompt-word" aria-live="polite">Wczytywanie…</div><div class="hint" id="hint">Wpisz tłumaczenie i naciśnij Enter</div></div>
+          <form id="answer-form" novalidate>
+            <label class="sr-only" for="answer">Wpisz tłumaczenie</label>
+            <div class="answer-row"><input id="answer" name="answer" type="text" placeholder="Twoja odpowiedź…" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" aria-describedby="feedback diff-message"><button class="check-button" id="check-button" type="submit">Sprawdź <span aria-hidden="true">↗</span></button></div>
+            <div id="diff" class="diff" aria-label="Analiza liter"></div><p id="diff-message" class="sr-only" aria-live="polite"></p><p id="feedback" class="feedback" aria-live="polite"></p>
+          </form>
+          <div class="card-footer"><label class="toggle-label"><input id="ignore-diacritics" type="checkbox"><span class="switch"></span><span>Ignoruj polskie znaki</span></label><button id="skip-button" class="text-button" type="button">Pomiń słówko <span aria-hidden="true">→</span></button></div>
+        </section>
+        <section class="stats-grid" aria-label="Statystyki sesji">
+          <article class="stat-card"><span class="stat-icon green">✓</span><div><span class="stat-label">POPRAWNE</span><strong id="correct-count">0</strong></div></article>
+          <article class="stat-card"><span class="stat-icon red">×</span><div><span class="stat-label">BŁĘDNE</span><strong id="wrong-count">0</strong></div></article>
+          <article class="stat-card"><span class="stat-icon amber">♨</span><div><span class="stat-label">SERIA</span><strong><span id="streak-count">0</span><small> słów</small></strong></div></article>
+          <article class="stat-card"><span class="stat-icon blue">◎</span><div><span class="stat-label">SKUTECZNOŚĆ</span><strong id="accuracy-count">—</strong></div></article>
+        </section>
+      </section>
+      <aside class="side-column" aria-label="Ustawienia nauki">
+        <section class="side-card mode-card"><div class="side-heading"><span class="section-icon">⇄</span><div><h2>Tryb nauki</h2><p>Wybierz kierunek tłumaczenia</p></div></div><div class="mode-options" role="group" aria-label="Kierunek nauki"><button class="mode-option selected" data-mode="en-pl" type="button"><span class="mode-code">EN</span><span class="mode-arrow">→</span><span class="mode-code">PL</span><span class="mode-check" aria-hidden="true">✓</span></button><button class="mode-option" data-mode="pl-en" type="button"><span class="mode-code">PL</span><span class="mode-arrow">→</span><span class="mode-code">EN</span><span class="mode-check" aria-hidden="true">✓</span></button><button class="mode-option" data-mode="mix" type="button"><span class="mode-code">EN</span><span class="mode-arrow">↔</span><span class="mode-code">PL</span><span class="mode-check" aria-hidden="true">✓</span></button></div><div class="mode-caption" id="mode-caption">Angielski na polski</div></section>
+        <section class="side-card review-card"><div class="side-heading"><span class="section-icon review-icon">↻</span><div><h2>Powtórki</h2><p>Wróć do trudniejszych słówek</p></div></div><div class="review-row"><div><strong id="review-count">0</strong><span> słówek czeka</span></div><button id="review-button" class="outline-button" type="button" disabled>Powtórz błędne <span aria-hidden="true">→</span></button></div><div class="review-progress"><span id="review-progress"></span></div><p id="review-status" class="review-status">Twoja kolejka powtórek jest pusta.</p></section>
+        <section class="tip-card"><div class="tip-star" aria-hidden="true">✳</div><div><strong>Wskazówka na dziś</strong><p>Regularne, krótkie sesje pomagają zapamiętać więcej. Nawet pięć minut robi różnicę.</p></div></section>
+        <button id="reset-button" class="reset-button" type="button">Wyczyść zapisane postępy</button>
+      </aside>
+    </main>
+    <footer class="app-footer"><span>Ucz się we własnym tempie.</span><span id="dictionary-status">Słownik gotowy</span></footer>
+    <div id="load-error" class="load-error" role="status" hidden><span>Nie udało się wczytać słownika.</span><button id="retry-button" type="button">Spróbuj ponownie</button></div>
+  </div>
+</body>
+</html>
