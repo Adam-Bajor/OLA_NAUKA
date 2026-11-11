@@ -6,7 +6,7 @@
   const ui = {
     prompt: $('#prompt-word'), label: $('#prompt-label'), direction: $('#direction-label'), hint: $('#hint'),
     form: $('#answer-form'), answer: $('#answer'), check: $('#check-button'), feedback: $('#feedback'),
-    diff: $('#diff'), diffMessage: $('#diff-message'), progress: $('#progress-label'),
+    diff: $('#diff'), reveal: $('#reveal-word'), revealText: $('#reveal-text'), diffMessage: $('#diff-message'), progress: $('#progress-label'),
     correct: $('#correct-count'), wrong: $('#wrong-count'), streak: $('#streak-count'), accuracy: $('#accuracy-count'),
     reviewCount: $('#review-count'), reviewButton: $('#review-button'), reviewProgress: $('#review-progress'), reviewStatus: $('#review-status'),
     ignore: $('#ignore-diacritics'), loadError: $('#load-error'), dictionaryStatus: $('#dictionary-status'), modeCaption: $('#mode-caption')
@@ -62,6 +62,7 @@
   }
   function nextWord() {
     if (!state.words.length) return;
+    clearReveal();
     if (state.reviewMode) {
       if (!state.reviewDeck.length) state.reviewDeck = shuffle(state.review);
       if (!state.reviewDeck.length) { state.reviewMode = false; }
@@ -152,6 +153,23 @@
       else ui.diffMessage.textContent = `Błąd na pozycji ${pos}: wpisano '${item.char}', oczekiwano '${item.expected}'`;
     }
   }
+  function clearReveal() {
+    ui.reveal.hidden = true;
+    ui.revealText.replaceChildren();
+  }
+  function revealAnswer(answer, result, isCorrect) {
+    const target = Array.from(answer);
+    let targetIndex = 0;
+    ui.revealText.replaceChildren();
+    for (const item of result.cells) {
+      if (item.op === 'extra') continue;
+      const letter = document.createElement('span');
+      letter.className = !isCorrect && (item.op === 'wrong' || item.op === 'missing') ? 'reveal-letter corrected' : 'reveal-letter';
+      letter.textContent = target[targetIndex++] || '';
+      ui.revealText.append(letter);
+    }
+    ui.reveal.hidden = false;
+  }
   function expectedAnswers() {
     return state.direction === 'en-pl' ? state.current.pl : [state.current.en];
   }
@@ -162,6 +180,7 @@
     const candidate = bestAlignment(value, expectedAnswers());
     paintDiff(candidate.result);
     const isCorrect = candidate.result.distance === 0;
+    revealAnswer(candidate.answer, candidate.result, isCorrect);
     state.locked = true;
     if (isCorrect) {
       state.correct++; state.streak++; state.bestStreak = Math.max(state.bestStreak, state.streak);
@@ -170,7 +189,7 @@
     } else {
       state.wrong++; state.streak = 0;
       if (!state.review.some(item => item.en === state.current.en)) state.review.push(state.current);
-      ui.feedback.textContent = `Jeszcze nie — poprawna odpowiedź: ${candidate.answer}`; ui.feedback.className = 'feedback bad';
+      ui.feedback.textContent = 'Jeszcze nie.'; ui.feedback.className = 'feedback bad';
     }
     persist(); updateStats(); renderReview();
     ui.check.textContent = 'Następne →';
@@ -201,6 +220,7 @@
   }
   function setMode(mode) {
     state.mode = mode;
+    clearReveal();
     document.querySelectorAll('.mode-option').forEach(button => {
       const selected = button.dataset.mode === mode;
       button.classList.toggle('selected', selected);

@@ -24,7 +24,7 @@
           <form id="answer-form" novalidate>
             <label class="sr-only" for="answer">Wpisz tłumaczenie</label>
             <div class="answer-row"><input id="answer" name="answer" type="text" placeholder="Twoja odpowiedź…" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" aria-describedby="feedback diff-message"><button class="check-button" id="check-button" type="submit">Sprawdź <span aria-hidden="true">↗</span></button></div>
-            <div id="diff" class="diff" aria-label="Analiza liter"></div><p id="diff-message" class="sr-only" aria-live="polite"></p><p id="feedback" class="feedback" aria-live="polite"></p>
+            <div id="diff" class="diff" aria-label="Analiza liter"></div><div id="reveal-word" class="reveal-word" hidden aria-live="polite"><div class="reveal-label">POPRAWNA ODPOWIEDŹ</div><div id="reveal-text" class="reveal-text"></div></div><p id="diff-message" class="sr-only" aria-live="polite"></p><p id="feedback" class="feedback" aria-live="polite"></p>
           </form>
           <div class="card-footer"><label class="toggle-label"><input id="ignore-diacritics" type="checkbox"><span class="switch"></span><span>Ignoruj polskie znaki</span></label><button id="skip-button" class="text-button" type="button">Pomiń słówko <span aria-hidden="true">→</span></button></div>
         </section>
