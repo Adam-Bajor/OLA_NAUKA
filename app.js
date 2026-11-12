@@ -1,6 +1,6 @@
 (() => {
   'use strict';
-  const EMBEDDED_DICTIONARY = `tasty;pyszny\nawful;okropny\nhungry;głodny\nthirsty;spragniony\nbored;znudzony\nexcited;podekscytowany\nfine;dobrze\nangry;zły`;
+  const EMBEDDED_DICTIONARY = `tasty;pyszny\nawful;okropny\nhungry;głodny\nthirsty;spragniony\nbored;znudzony\nexcited;podekscytowany\nfine;dobrze\nangry;zły\npear;gruszka\nplum;śliwka\ntomato;pomidor\ncucumber;ogórek\nbiscuit;ciastko\ncereal;płatki|owsianka\nmilk;mleko`;
   const STORAGE_KEY = 'slowka-en-pl-v1';
   const $ = (selector) => document.querySelector(selector);
   const ui = {

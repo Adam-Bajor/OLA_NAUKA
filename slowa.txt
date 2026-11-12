@@ -6,3 +6,10 @@ bored;znudzony
 excited;podekscytowany
 fine;dobrze
 angry;zły
+pear;gruszka
+plum;śliwka
+tomato;pomidor
+cucumber;ogórek
+biscuit;ciastko
+cereal;płatki|owsianka
+milk;mleko
