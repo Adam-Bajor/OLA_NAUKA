@@ -11,7 +11,8 @@
     reviewCount: $('#review-count'), reviewButton: $('#review-button'), reviewProgress: $('#review-progress'), reviewStatus: $('#review-status'),
     ignore: $('#ignore-diacritics'), loadError: $('#load-error'), dictionaryStatus: $('#dictionary-status'), modeCaption: $('#mode-caption')
   };
-  const state = { words: [], deck: [], current: null, mode: 'en-pl', direction: 'en-pl', correct: 0, wrong: 0, streak: 0, bestStreak: 0, review: [], reviewKeys: [], reviewDeck: [], reviewMode: false, liveTimer: null, locked: false };
+  const MODE_STORAGE_KEY = 'slowka-mode';
+  const state = { words: [], deck: [], current: null, mode: 'mix', direction: 'en-pl', correct: 0, wrong: 0, streak: 0, bestStreak: 0, review: [], reviewKeys: [], reviewDeck: [], reviewMode: false, liveTimer: null, locked: false };
 
   function parseDictionary(text) {
     return text.split(/\r?\n/).map(line => line.trim()).filter(line => line && !line.startsWith('#')).map(line => {
@@ -211,6 +212,10 @@
       state.bestStreak = Number(saved.bestStreak) || 0;
       state.reviewKeys = Array.isArray(saved.review) ? saved.review.filter(key => typeof key === 'string') : [];
     } catch { state.bestStreak = 0; state.reviewKeys = []; }
+    try {
+      const savedMode = localStorage.getItem(MODE_STORAGE_KEY);
+      if (savedMode === 'en-pl' || savedMode === 'pl-en' || savedMode === 'mix') state.mode = savedMode;
+    } catch { state.mode = 'mix'; }
   }
   function renderReview() {
     ui.reviewCount.textContent = state.review.length;
@@ -220,13 +225,14 @@
   }
   function setMode(mode) {
     state.mode = mode;
+    try { localStorage.setItem(MODE_STORAGE_KEY, mode); } catch (error) { console.warn('Nie udało się zapisać trybu nauki.', error); }
     clearReveal();
     document.querySelectorAll('.mode-option').forEach(button => {
       const selected = button.dataset.mode === mode;
       button.classList.toggle('selected', selected);
       button.setAttribute('aria-pressed', String(selected));
     });
-    ui.modeCaption.textContent = mode === 'en-pl' ? 'Angielski na polski' : mode === 'pl-en' ? 'Polski na angielski' : 'Losowy kierunek';
+    ui.modeCaption.textContent = mode === 'en-pl' ? 'Angielski na polski' : mode === 'pl-en' ? 'Polski na angielski' : 'Losowy kierunek — MIX';
     state.reviewMode = false;
     if (state.current) nextWord();
   }
@@ -252,5 +258,5 @@
       paintDiff(bestAlignment(ui.answer.value, expectedAnswers()).result);
     }, 250);
   });
-  restore(); updateStats(); loadDictionary();
+  restore(); setMode(state.mode); updateStats(); loadDictionary();
 })();
