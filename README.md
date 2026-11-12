@@ -2,6 +2,10 @@
 
 Lekka aplikacja SPA do ćwiczenia słownictwa angielskiego i polskiego. Działa bez frameworków, bibliotek zewnętrznych i procesu budowania. Słownik oraz postępy są obsługiwane lokalnie w przeglądarce.
 
+## Cache zasobów
+
+Po każdej zmianie pliku style.css lub app.js zwiększ parametr wersji w odnośnikach do tych plików w index.html (np. ?v=3 zmień na ?v=4). Dzięki temu przeglądarki pobiorą aktualne pliki zamiast używać kopii z cache.
+
 ## Funkcje
 
 - Nauka w kierunkach EN → PL, PL → EN i MIX.
