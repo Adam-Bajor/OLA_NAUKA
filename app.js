@@ -30,7 +30,8 @@
       state.words = parseDictionary(EMBEDDED_DICTIONARY);
       ui.dictionaryStatus.textContent = `Tryb lokalny (file://) · słownik wbudowany · ${state.words.length} słówek`;
       state.deck = shuffle(state.words);
-      state.review = state.reviewKeys.map(key => state.words.find(word => word.en === key)).filter(Boolean);
+      restoreReviewQueue();
+      persist();
       nextWord();
       renderReview();
       return;
@@ -49,7 +50,8 @@
       console.warn('Nie udało się pobrać slowa.txt; uruchomiono słownik awaryjny.', error);
     }
     state.deck = shuffle(state.words);
-    state.review = state.reviewKeys.map(key => state.words.find(word => word.en === key)).filter(Boolean);
+    restoreReviewQueue();
+    persist();
     nextWord();
     renderReview();
   }
@@ -204,18 +206,27 @@
     ui.accuracy.textContent = total ? `${Math.round(state.correct / total * 100)}%` : '—';
   }
   function persist() {
-    try { localStorage.setItem(STORAGE_KEY, JSON.stringify({ bestStreak: state.bestStreak, review: state.review.map(w => w.en) })); } catch (error) { console.warn('Nie udało się zapisać postępów.', error); }
+    try { localStorage.setItem(STORAGE_KEY, JSON.stringify({ correct: state.correct, wrong: state.wrong, streak: state.streak, bestStreak: state.bestStreak, review: state.review.map(w => w.en) })); } catch (error) { console.warn('Nie udało się zapisać postępów.', error); }
   }
   function restore() {
     try {
-      const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
-      state.bestStreak = Number(saved.bestStreak) || 0;
+      const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}') || {};
+      const count = value => Number.isSafeInteger(value) && value >= 0 ? value : 0;
+      state.correct = count(saved.correct);
+      state.wrong = count(saved.wrong);
+      state.streak = count(saved.streak);
+      state.bestStreak = count(saved.bestStreak);
       state.reviewKeys = Array.isArray(saved.review) ? saved.review.filter(key => typeof key === 'string') : [];
-    } catch { state.bestStreak = 0; state.reviewKeys = []; }
+    } catch { state.correct = 0; state.wrong = 0; state.streak = 0; state.bestStreak = 0; state.reviewKeys = []; }
     try {
       const savedMode = localStorage.getItem(MODE_STORAGE_KEY);
       if (savedMode === 'en-pl' || savedMode === 'pl-en' || savedMode === 'mix') state.mode = savedMode;
     } catch { state.mode = 'mix'; }
+  }
+  function restoreReviewQueue() {
+    const byEnglish = new Map(state.words.map(word => [word.en, word]));
+    state.review = [...new Set(state.reviewKeys)].map(key => byEnglish.get(key)).filter(Boolean);
+    state.reviewKeys = state.review.map(word => word.en);
   }
   function renderReview() {
     ui.reviewCount.textContent = state.review.length;
@@ -242,10 +253,11 @@
   document.querySelectorAll('.mode-option').forEach(button => button.addEventListener('click', () => setMode(button.dataset.mode)));
   ui.reviewButton.addEventListener('click', () => { state.reviewMode = true; state.reviewDeck = shuffle(state.review); nextWord(); });
   $('#retry-button').addEventListener('click', loadDictionary);
-  $('#reset-button').addEventListener('click', () => {
-    if (!window.confirm('Czy na pewno wyczyścić zapisane najlepsze wyniki i kolejkę powtórek?')) return;
+  $('#clear-progress-button').addEventListener('click', () => {
+    if (!window.confirm('Czy na pewno wyczyścić zapisane postępy i kolejkę powtórek?')) return;
     localStorage.removeItem(STORAGE_KEY); state.review = []; state.reviewKeys = []; state.bestStreak = 0; state.correct = 0; state.wrong = 0; state.streak = 0; state.reviewMode = false; persist(); updateStats(); renderReview(); nextWord();
   });
+  $('#reset-streak-button').addEventListener('click', () => { state.streak = 0; persist(); updateStats(); });
   const themeButton = $('#theme-toggle');
   function applyTheme(theme) { document.documentElement.dataset.theme = theme; themeButton.textContent = theme === 'dark' ? '☾' : '☼'; themeButton.setAttribute('aria-label', theme === 'dark' ? 'Włącz jasny motyw' : 'Włącz ciemny motyw'); }
   let theme = localStorage.getItem('slowka-theme');

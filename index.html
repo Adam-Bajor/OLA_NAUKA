@@ -6,8 +6,8 @@
   <meta name="theme-color" content="#f5f7fb">
   <meta name="description" content="Prosta aplikacja do nauki angielskich i polskich słówek.">
   <title>Słówka — EN ↔ PL</title>
-  <link rel="stylesheet" href="style.css?v=3">
-  <script src="app.js?v=3" defer></script>
+  <link rel="stylesheet" href="style.css?v=4">
+  <script src="app.js?v=4" defer></script>
 </head>
 <body>
   <div class="app-shell">
@@ -39,7 +39,7 @@
         <section class="side-card mode-card"><div class="side-heading"><span class="section-icon">⇄</span><div><h2>Tryb nauki</h2><p>Wybierz kierunek tłumaczenia</p></div></div><div class="mode-options" role="group" aria-label="Kierunek nauki"><button class="mode-option" data-mode="en-pl" type="button"><span class="mode-code">EN</span><span class="mode-arrow">→</span><span class="mode-code">PL</span><span class="mode-check" aria-hidden="true">✓</span></button><button class="mode-option" data-mode="pl-en" type="button"><span class="mode-code">PL</span><span class="mode-arrow">→</span><span class="mode-code">EN</span><span class="mode-check" aria-hidden="true">✓</span></button><button class="mode-option selected" data-mode="mix" type="button"><span class="mode-label">MIX</span><span class="mode-check" aria-hidden="true">✓</span></button></div><div class="mode-caption" id="mode-caption">Losowy kierunek — MIX</div></section>
         <section class="side-card review-card"><div class="side-heading"><span class="section-icon review-icon">↻</span><div><h2>Powtórki</h2><p>Wróć do trudniejszych słówek</p></div></div><div class="review-row"><div><strong id="review-count">0</strong><span> słówek czeka</span></div><button id="review-button" class="outline-button" type="button" disabled>Powtórz błędne <span aria-hidden="true">→</span></button></div><div class="review-progress"><span id="review-progress"></span></div><p id="review-status" class="review-status">Twoja kolejka powtórek jest pusta.</p></section>
         <section class="tip-card"><div class="tip-star" aria-hidden="true">✳</div><div><strong>Wskazówka na dziś</strong><p>Regularne, krótkie sesje pomagają zapamiętać więcej. Nawet pięć minut robi różnicę.</p></div></section>
-        <button id="reset-button" class="reset-button" type="button">Wyczyść zapisane postępy</button>
+        <div class="progress-actions"><button id="clear-progress-button" class="reset-button clear-progress-button" type="button">Wyczyść postępy (cache)</button><button id="reset-streak-button" class="outline-button reset-streak-button" type="button">Wyzeruj serię</button></div>
       </aside>
     </main>
     <footer class="app-footer"><span>Ucz się we własnym tempie.</span><span id="dictionary-status">Słownik gotowy</span></footer>
